@@ -1,245 +1,235 @@
-var querystring = require("querystring");
-import axios from 'axios';
-import { openvz } from './subclasses';
+
+import { Openvz } from './openvz';
+import { Pools } from './pools';
+import { Storage } from './storage';
+import { Network } from './network';
+import { Access } from './access';
+import { Qemu } from './qemu';
+import { Helper } from './helper';
 export class Proxmox {
   apiURL: string;
-  authString: string;
+
   token: { CSRF?: any; PVEAuth?: any; timeStamp?: any; };
-  openvz: openvz;
-  constructor(name: string, pwd: string, hostname: string) {
-    this.apiURL = 'https://' + hostname + ':8006/api2/json';
-    this.authString = 'username=' + name + '&password=' + pwd;
-
-    this.token = {};
-    this.token.CSRF = '';
-    this.token.PVEAuth = '';
-    this.token.timeStamp = 0;
-    this.openvz = new openvz(this.get,this.post,this.del,this.put)
+  openvz: Openvz;
+  username: string;
+  password: string;
+  pools: Pools;
+  network: Network;
+  access: Access;
+  qemu: Qemu;
+  helper: any;
+  constructor(username: string, password: string, hostname: string) {  
+    const config = {username, password, apiURL:'https://' + hostname + ':8006/api2/json'};
+    this.helper = new Helper(config);
+    this.openvz = new Openvz(config)
+    this.pools = new Pools(config);
+    this.pools = new Storage(config);
+    this.network=new Network(config);
+    this.access=new Access(config);
+    this.qemu=new Qemu(config);
   }
 
-  async authorize(path: any) {
-    const response = JSON.parse(await axios.get(path));
-    this.token.CSRF = response.data.CSRFPreventionToken;
-    this.token.PVEAuth = response.data.ticket;
-    this.token.timeStamp = new Date().getTime();
-  }
-
-  async makeRequest(method: string, path: any, data: any) {
-    if ((this.token.timeStamp + 7200) < new Date().getTime()) {
-      await this.authorize(path)
-    }
-    //this.curl("command");
-  }
-
-  async get(path: string, data: {}) {   
-    await this.makeRequest('GET', path, data);
-  }
-
-  async post(path: string, data: any) {  
-    data = querystring.stringify(data);
-    this.makeRequest('POST', path, data);
-  }
-
-  async del(path: string, data: {}) {    
-    this.makeRequest('DEL', path, data);
-  }
-
-  async put(path: string, data: { search?: any; key?: any; timezone?: any; }) {  
-    data = querystring.stringify(data);
-    this.makeRequest('PUT', path, data);
-  }
-
-
-  getClusterStatus(callback: any) {
+  async getClusterStatus(callback: any) {
     const data = {};
-    this.get('/cluster/status', data);
+    return await this.helper.httpGet('/cluster/status', data);
   }
-  getClusterBackupSchedule(callback: any) {
+  httpGet(arg0: string, data: {}) {
+    throw new Error("Method not implemented.");
+  }
+  async getClusterBackupSchedule(callback: any) {
     const data = {};
-    this.get('/cluster/backup', data);
+    return await this.helper.httpGet('/cluster/backup', data);
   }
-  getNodeNetworks(node: string) {
+  async getNodeNetworks(node: string) {
     const data = {};
     const url = '/nodes/' + node + '/network';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeInterface(node: string, nodeinterface: string) {
+  async getNodeInterface(node: string, nodeinterface: string) {
     const data = {};
     const url = '/nodes/' + node + '/network/' + nodeinterface;
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeContainerIndex(node: string) {
+  async getNodeContainerIndex(node: string) {
     const data = {};
     const url = '/nodes/' + node + '/openvz/';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeVirtualIndex(node: string) {
+  async getNodeVirtualIndex(node: string) {
     const data = {};
     const url = '/nodes/' + node + '/qemu';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeServiceState(node: string, service: string) {
+  async getNodeServiceState(node: string, service: string) {
     const data = {};
     const url = '/nodes/' + node + '/services/' + service + '/state';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeStorage(node: string) {
+  async getNodeStorage(node: string) {
     const data = {};
     const url = '/nodes/' + node + '/storage';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeFinishedTasks(node: string) {
+  async getNodeFinishedTasks(node: string) {
     const data = {};
     const url = '/nodes/' + node + '/tasks';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeDNS(node: string) {
+  async getNodeDNS(node: string) {
     const data = {};
     const url = '/nodes/' + node + '/dns';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeSyslog(node: string) {
+  async getNodeSyslog(node: string) {
     const data = {};
     const url = '/nodes/' + node + '/syslog';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeRRD(node: string) {
+  async getNodeRRD(node: string) {
     const data = {};
     const url = '/nodes/' + node + '/rrd';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeRRDData(node: string) {
+  async getNodeRRDData(node: string) {
     const data = {};
     const url = '/nodes/' + node + '/rrddata';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeBeans(node: string) {
+  async getNodeBeans(node: string) {
     const data = {};
     const url = '/nodes/' + node + '/ubfailcnt';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeTaskByUPID(node: string, upid: string) {
+  async getNodeTaskByUPID(node: string, upid: string) {
     const data = {};
     const url = '/nodes/' + node + '/tasks/' + upid;
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeTaskLogByUPID(node: string, upid: string) {
+  async getNodeTaskLogByUPID(node: string, upid: string) {
     const data = {};
     const url = '/nodes/' + node + '/tasks/' + upid + '/log';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeTaskStatusByUPID(node: string, upid: string) {
+  async getNodeTaskStatusByUPID(node: string, upid: string) {
     const data = {};
     const url = '/nodes/' + node + '/tasks/' + upid + '/status';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeScanMethods(node: string) {
+  async getNodeScanMethods(node: string) {
     const data = {};
     const url = '/nodes/' + node + '/scan';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getRemoteiSCSI(node: string) {
+  async getRemoteiSCSI(node: string) {
     const data = {};
     const url = '/nodes/' + node + '/scan/iscsi';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeLVMGroups(node: string) {
+  async getNodeLVMGroups(node: string) {
     const data = {};
     const url = '/nodes/' + node + '/scan/lvm';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getRemoteNFS(node: string) {
+  async getRemoteNFS(node: string) {
     const data = {};
     const url = '/nodes/' + node + '/scan/nfs';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeUSB(node: string) {
+  async getNodeUSB(node: string) {
     const data = {};
     const url = '/nodes/' + node + '/scan/usb';
   }
-  getStorageVolumeData(node: string, storage: string, volume: string) {
+  async getStorageVolumeData(node: string, storage: string, volume: string) {
     const data = {};
     const url = '/nodes/' + node + '/storage/' + storage + '/content/' + volume;
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getStorageConfig(storage: string) {
+  async getStorageConfig(storage: string) {
     const data = {};
     const url = '/storage/' + storage;
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeStorageContent(node: string, storage: string) {
+  async getNodeStorageContent(node: string, storage: string) {
     const data = {};
     const url = '/nodes/' + node + '/storage/' + storage + '/content';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeStorageRRD(node: string, storage: string) {
+  async getNodeStorageRRD(node: string, storage: string) {
     const data = {};
     const url = '/nodes/' + node + '/storage/' + storage + '/rrd';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getNodeStorageRRDData(node: string, storage: string) {
+  async getNodeStorageRRDData(node: string, storage: string) {
     const data = {};
     const url = '/nodes/' + node + '/storage/' + storage + '/rrddata';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
   //openvz functions
-  deleteNodeNetworkConfig(node: string) {
+  async deleteNodeNetworkConfig(node: string) {
     const data = {};
     const url = '/nodes/' + node + '/network';
-    this.del(url, data);
+    return await this.helper.httpDel(url, data);
   }
-  deleteNodeInterface(node: string, nodeinterface: string) {
+  httpDel(url: string, data: {}) {
+    throw new Error("Method not implemented.");
+  }
+  async deleteNodeInterface(node: string, nodeinterface: string) {
     const data = {};
     const url = '/nodes/' + node + '/network/' + nodeinterface;
-    this.del(url, data);
+    return await this.helper.httpDel(url, data);
   }
-  deletePool(poolid: string) {
+  async deletePool(poolid: string) {
     const data = {};
     const url = '/pools/' + poolid;
-    this.del(url, data);
+    return await this.helper.httpDel(url, data);
   }
-  setNodeDNSDomain(node: string, domain: any) {
+  async setNodeDNSDomain(node: string, domain: any) {
     const data = { 'search': domain };
     const url = '/nodes/' + node + '/dns';
-    this.put(url, data);
+    return await this.helper.httpPut(url, data);
   }
-  setNodeSubscriptionKey(node: string, key: any) {
+  httpPut(url: string, data: { search: any; }) {
+    throw new Error("Method not implemented.");
+  }
+  async setNodeSubscriptionKey(node: string, key: any) {
     const data = { 'key': key };
     const url = '/nodes/' + node + '/subscription';
-    this.put(url, data);
+    return await this.helper.httpPut(url, data);
   }
-  setNodeTimeZone(node: string, timezone: any) {
+  async setNodeTimeZone(node: string, timezone: any) {
     const data = { 'timezone': timezone };
     const url = '/nodes/' + node + '/time';
-    this.put(url, data);
+    return await this.helper.httpPut(url, data);
   }
-  setPoolData(poolid: string, data: any) {
+  async setPoolData(poolid: string, data: any) {
     const url = '/pools/' + poolid;
-    this.put(url, data);
+    return await this.helper.httpPut(url, data);
   }
-  updateStorageConfiguration(storageid: string, data: any) {
+  async updateStorageConfiguration(storageid: string, data: any) {
     const url = '/storage/' + storageid;
-    this.put(url, data);
-  }
-  //self added functions
-  getNodes(callback: any) {
+    return await this.helper.httpPut(url, data);
+  }  
+  async getNodes(callback: any) {
     const data = {};
-    const url = '/nodes/';
-    this.get(url, data);
+    const url = '/nodes';
+    return await this.helper.httpGet(url, data);
   }
-  getStorage(callback: any) {
+  async getStorage(callback: any) {
     const data = {};
     const url = '/storage/';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  getQemu(node: string) {
+  async getQemu(node: string) {
     const data = {};
     const url = '/nodes/' + node + '/qemu';
-    this.get(url, data);
+    return await this.helper.httpGet(url, data);
   }
-  createQemu(node: string, data: any) {
+  async createQemu(node: string, data: any) {
     const url = '/nodes/' + node + '/qemu';
-    this.post(url, data);
+    return await this.helper.httpPost(url, data);
+  }
+  httpPost(url: string, data: any) {
+    throw new Error("Method not implemented.");
   }
 
 
