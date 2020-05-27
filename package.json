@@ -1,0 +1,40 @@
+{
+  "name": "@naimo84/proxmox",
+  "preferGobal": "false",
+  "version": "0.1.0",
+  "author": "naimo84",
+  "description": "node.js, asynchronous, proxmox client",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/naimo84/node-proxmox"
+  },
+  "scripts": {
+    "release": "standard-version",
+    "release-minor": "standard-version --release-as minor",
+    "build": "gulp"
+  },
+  "engines": {
+    "node": ">=0.10.9"
+  },
+  "licenses": [
+    {
+      "type": "Artistic 2.0"
+    }
+  ],
+  "main": "./dist/proxmox.js",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "querystring": "^0.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.5",
+    "commitlint": "^8.3.5",
+    "gulp": "^4.0.2",
+    "gulp-nodemon": "^2.4.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "gulp-watch": "^5.0.1",
+    "standard-version": "^7.1.0",
+    "typescript": "^3.8.3"
+  }
+}
