@@ -2,11 +2,11 @@ var querystring = require("querystring");
 import axios, { AxiosRequestConfig } from 'axios';
 import https = require('https');
 
-export class Helper {    
+export class Helper {
     token: any;
     config: any;
     constructor(config) {
-        this.config=config;        
+        this.config = config;
         this.token = {};
         this.token.CSRF = '';
         this.token.PVEAuth = '';
@@ -52,7 +52,7 @@ export class Helper {
             await this.authorize();
         }
         try {
-            const headers = {
+            let headers = {
                 Cookie: `PVEAuthCookie=${this.token.PVEAuth}`
             };
 
@@ -67,7 +67,10 @@ export class Helper {
 
             if (method !== "GET") {
                 options.data = data;
+                options.headers.CSRFPreventionToken = this.token.CSRF;
             }
+
+
 
             const response = await axios(options);
 
