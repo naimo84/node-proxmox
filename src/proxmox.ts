@@ -19,7 +19,7 @@ export class Proxmox {
   qemu: Qemu;
   helper: any;
   constructor(username: string, password: string, hostname: string) {  
-    const config = {username, password, apiURL:'https://' + hostname + ':8006/api2/json'};
+    const config = {username, password, apiURL:'https://' + hostname + ':8006/api2'};
     this.helper = new Helper(config);
     this.openvz = new Openvz(config)
     this.pools = new Pools(config);

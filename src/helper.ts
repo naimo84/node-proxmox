@@ -34,11 +34,11 @@ export class Helper {
     async authorize() {
         const response = await axios({
             method: 'POST',
-            url: this.config.apiURL + '/access/ticket',
+            url: this.config.apiURL + '/extjs/access/ticket',
             httpsAgent: new https.Agent({
                 rejectUnauthorized: false
             }),
-            data: `username=${this.config.username}&password=${this.config.password}`
+            data: `username=${this.config.username}&password=${this.config.password}&realm=pam`
         });
 
         const token = response.data;
@@ -58,7 +58,7 @@ export class Helper {
 
             let options: AxiosRequestConfig = {
                 method,
-                url: this.config.apiURL + path,
+                url: this.config.apiURL + '/json'+ path,
                 httpsAgent: new https.Agent({
                     rejectUnauthorized: false
                 }),

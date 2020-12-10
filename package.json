@@ -8,10 +8,12 @@
     "type": "git",
     "url": "https://github.com/naimo84/node-proxmox"
   },
+  "types": "types/index.d.ts",
   "scripts": {
     "release": "standard-version",
     "release-minor": "standard-version --release-as minor",
-    "build": "gulp"
+    "build": "gulp",
+    "dts": "dts-generator --name '@naimo84/proxmox' --project ./ --out package-name.d.ts"
   },
   "engines": {
     "node": ">=0.10.9"
