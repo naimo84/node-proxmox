@@ -37,7 +37,7 @@
     "gulp-sourcemaps": "^2.6.5",
     "gulp-typescript": "^6.0.0-alpha.1",
     "gulp-watch": "^5.0.1",
-    "standard-version": "^7.1.0",
+    "standard-version": "^8.0.1",
     "typescript": "^3.8.3"
   }
 }
