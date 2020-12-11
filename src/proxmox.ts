@@ -29,14 +29,14 @@ export class Proxmox {
     this.qemu=new Qemu(config);
   }
 
-  async getClusterStatus(callback: any) {
+  async getClusterStatus() {
     const data = {};
     return await this.helper.httpGet('/cluster/status', data);
   }
   httpGet(arg0: string, data: {}) {
     throw new Error("Method not implemented.");
   }
-  async getClusterBackupSchedule(callback: any) {
+  async getClusterBackupSchedule() {
     const data = {};
     return await this.helper.httpGet('/cluster/backup', data);
   }
@@ -209,12 +209,12 @@ export class Proxmox {
     const url = '/storage/' + storageid;
     return await this.helper.httpPut(url, data);
   }  
-  async getNodes(callback: any) {
+  async getNodes() {
     const data = {};
     const url = '/nodes';
     return await this.helper.httpGet(url, data);
   }
-  async getStorage(callback: any) {
+  async getStorage() {
     const data = {};
     const url = '/storage/';
     return await this.helper.httpGet(url, data);

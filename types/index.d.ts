@@ -11,9 +11,9 @@ export class Proxmox {
 
     deletePool(poolid: any): any;
 
-    getClusterBackupSchedule(callback: any): any;
+    getClusterBackupSchedule(): any;
 
-    getClusterStatus(callback: any): any;
+    getClusterStatus(): any;
 
     getNodeBeans(node: any): any;
 
@@ -57,7 +57,7 @@ export class Proxmox {
 
     getNodeVirtualIndex(node: any): any;
 
-    getNodes(callback: any): any;
+    getNodes(): any;
 
     getQemu(node: any): any;
 
@@ -65,7 +65,7 @@ export class Proxmox {
 
     getRemoteiSCSI(node: any): any;
 
-    getStorage(callback: any): any;
+    getStorage(): any;
 
     getStorageConfig(storage: any): any;
 
