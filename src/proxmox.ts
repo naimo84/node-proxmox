@@ -18,15 +18,17 @@ export class Proxmox {
   access: Access;
   qemu: Qemu;
   helper: any;
+  storage: Storage;
+
   constructor(username: string, password: string, hostname: string) {  
     const config = {username, password, apiURL:'https://' + hostname + ':8006/api2'};
     this.helper = new Helper(config);
     this.openvz = new Openvz(config)
     this.pools = new Pools(config);
-    this.pools = new Storage(config);
     this.network=new Network(config);
     this.access=new Access(config);
     this.qemu=new Qemu(config);
+    this.storage=new Storage(config);
   }
 
   async getClusterStatus() {
@@ -214,6 +216,7 @@ export class Proxmox {
     const url = '/nodes';
     return await this.helper.httpGet(url, data);
   }
+
   async getStorage() {
     const data = {};
     const url = '/storage/';
