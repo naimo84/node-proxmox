@@ -8,6 +8,7 @@ import { Qemu } from "./qemu";
 import { Storage } from "./storage";
 
 
+
 export class Proxmox {
     openvz: Openvz;
     username: string;
@@ -17,6 +18,7 @@ export class Proxmox {
     access: Access;
     qemu: Qemu;
     storage: Storage;
+  
 
     constructor(username: any, password: any, hostname: any);
 

@@ -6,7 +6,7 @@ export class Storage {
 
 
 
-    list(callback);
+    list();
 
 
 
