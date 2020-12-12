@@ -34,7 +34,7 @@ export class Helper {
     async authorize() {
         const response = await axios({
             method: 'POST',
-            url: this.config.apiURL + '/extjs/access/ticket',
+            url: this.config.apiURL + '/json/access/ticket',
             httpsAgent: new https.Agent({
                 rejectUnauthorized: false
             }),
