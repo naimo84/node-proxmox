@@ -12,15 +12,6 @@ var paths = {
     dist: 'dist'
 };
 
-gulp.watch('src/**/*.ts',()=>{
-    return tsProject
-    .src()
-    .pipe(sourcemaps.init())
-    .pipe(tsProject())
-    .js
-    .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest(paths.dist));
-})
 
 
 gulp.task("default", gulp.series(
