@@ -1,7 +1,7 @@
 {
   "name": "@naimo84/proxmox",
   "preferGobal": "false",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "naimo84",
   "description": "node.js, asynchronous, proxmox client",
   "repository": {
